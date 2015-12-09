@@ -21,3 +21,6 @@ class Student(models.Model):
 class User(models.Model):
     Username = models.CharField(max_length=30)
     Password = models.CharField(max_length=30)
+class Usert(models.Model):
+    Username = models.CharField(max_length=30)
+    Password = models.CharField(max_length=30)

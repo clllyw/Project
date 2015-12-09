@@ -1,4 +1,4 @@
-from models import Student,Teacher,User
+from models import Student,Teacher,User,Usert
 from django.template import Context
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
@@ -13,35 +13,74 @@ from django.shortcuts import render_to_response
 
 def home(request):
     return render_to_response("home.html")
-    
+
+def home_t(request):
+    return render_to_response("home-t.html")
+
+
 def search(request):
-    return render_to_response("search.html")
+    if request.GET:
+        tea=Teacher.objects.get(Username=request.GET["myt"])
+        c = Context({"tea":tea,})
+        return render_to_response("search2.html",c)
+    else:
+        return render_to_response("search.html")
 
 def request_(request):    
-#    if "requestdate" in request.GET:
-#        #print request.GET["requestdate"]
-#        request_date = request.GET["requestdate"]
-#        c = Context({"request_date":request_date,})
+
+    teacherlist = Teacher.objects.all()   
+    c = Context({"teacherlist":teacherlist})
 ##    else:
 ##        return HttpResponse("Not right password!")
 #        #return render_to_response("request.html",c) 
-#        return render_to_response("new.html")
-    if request:
+    return render_to_response("request.html",c)
+'''
+    if request and "requestdate" in request.GET:
+        #print request.GET["requestdate"]
+        #request_date = request.GET["requestdate"]
+        #rt = request.GET["requestteacher"]
+        u=User.objects.all()
+        for mu in u:
+            mu1=mu
         
-        teacherlist = Teacher.objects.all()   
-        c = Context({"teacherlist":teacherlist})
-        return render_to_response("request.html",c)
-    
+        Student.objects.get(Username = mu1.Username).update(
+        
+        Myrequestdate = GET["requestdate"],
+        Myrequestteacher = post["requestteacher"],
+          
+    return render_to_response("request.html",c)
+''' 
 def requestt(request):
-    return render_to_response("request-t.html") 
+    u=Usert.objects.all()
+    for mu in u:
+        mu1=mu
+    stu=Student.objects.filter(Myrequestteacher=mu1.Username)
+    c = Context({"stu":stu,})
+    return render_to_response("request-t.html",c) 
     
 def recommand(request):
-    return render_to_response("recommand.html")
+    if request.GET:
+        tea=Teacher.objects.get(Research_area=request.GET["area"])
+        c = Context({"tea":tea,})
+        return render_to_response("recommand2.html",c)
+    else:
+        
+        return render_to_response("recommand.html")
     
 def new(request):
-    return render_to_response("news.html")
+    teachers = Teacher.objects.all()
+
+    return render_to_response("news.html",{'teachers':teachers})
 
 def newt(request):
+    if request.POST:
+        post = request.POST
+        u=Usert.objects.all()
+        for mu in u:
+            mu1=mu
+        myu = Teacher.objects.get(Username = mu1.Username)
+        myu.Information = post["news"]
+        myu.save()
     return render_to_response("new-t.html")
 
 def registert(request):
@@ -68,8 +107,36 @@ def login(request):
     else:
         return render_to_response("login.html")
 
+def logint(request):
+    if request.GET:
+        teau=Teacher.objects.get(Username = request.GET["username"])
+        c = Context({"teau":teau,})
+        if request.GET["password"] == teau.Password:
+            Usert.objects.create(Username= teau.Username,Password=teau.Password)
+            return render_to_response("home-t.html",c)
+        else:
+            return HttpResponse("Not right password!")
+    else:
+        return render_to_response("login-t.html")
+    
 def informationt(request):
-    return render_to_response("information-t.html")
+    u=Usert.objects.all()
+    for mu in u:
+        mu1=mu
+    myu = Teacher.objects.get(Username = mu1.Username)
+    c=Context({"myu":myu,})
+    if request.POST:
+        post = request.POST
+        if post["research_area"] and post["introduction"] and post["email"]:
+            
+            myu.Research_area = post["research_area"]     
+            myu.Introduction = post["introduction"]
+            #myu. = post[""]
+            myu.Email = post["email"]   
+            myu.save()
+        else:
+            return HttpResponse('Please full all information.')
+    return render_to_response("information-t.html",c)
     
 def register(request):
     if request.POST:
@@ -83,13 +150,25 @@ def register(request):
         new_student.save()
     return render_to_response("gegister.html")
 
-def home_t(request):
-    return render_to_response("home-t.html")
+
 
 def information(request):
     u=User.objects.all()
     for mu in u:
-        c=Context({"mu":mu,}) 
+        mu1=mu
+    myu = Student.objects.get(Username = mu1.Username)
+    c=Context({"myu":myu,})
+    if request.POST:
+        post = request.POST
+        if post["number"] and post["institute"] and post["contact_way"] and post["email"]:
+            
+            myu.Number = post["number"]     
+            myu.Institute = post["institute"]
+            myu.Contact_way = post["contact_way"]
+            myu.Email = post["email"]   
+            myu.save()
+        else:
+            return HttpResponse('Please full all information.')
     return render_to_response("information.html",c)
     
     

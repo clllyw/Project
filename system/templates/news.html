@@ -109,6 +109,12 @@
         <!-- Unnamed () -->
         <div id="u13" class="text">
           <p><span>最新信息</span></p>
+    <ul>
+   	{% for teacher in teachers %}
+        <li>{{teacher.Username}}:{{ teacher.Information}}</li>
+        {% endfor %}
+
+    </ul>
         </div>
       </div>
     </div>

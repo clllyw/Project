@@ -2,7 +2,7 @@ from django.conf.urls import patterns,url
 
 from django.conf import settings
 from django.conf.urls.static import static
-from system.views import home, search, request_, requestt, recommand, new, registert, login, informationt, register,home_t,information
+from system.views import home, search, request_, requestt, recommand, new, registert, login, informationt, register,home_t,information,logint
 
 #from django.contrib import admin
 #admin.autodiscover()
@@ -20,8 +20,9 @@ urlpatterns = patterns('',
     url(r'^newt/$', 'system.views.newt'),
     url(r'^registert/$', 'system.views.registert'),
     url(r'^login/$', 'system.views.login'),
+    url(r'^logint/$', 'system.views.logint'),                       
     url(r'^informationt/$', 'system.views.informationt'),
-     url(r'^t/$', 'system.views.home_t'),
+    url(r'^t/$', 'system.views.home_t'),
     url(r'^register/$', 'system.views.register'),
     url(r'^infor/$', 'system.views.information'),
 
