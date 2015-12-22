@@ -1,4 +1,4 @@
-from models import Student,Teacher,User,Usert
+from models import Student,Teacher,User,Usert,New,Appointment
 from django.template import Context
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
@@ -10,6 +10,10 @@ from django.shortcuts import render_to_response
 #        'user': request.user,
 #        'ip_address': request.META['REMOTE_ADDR']
 #    }
+
+arealist = set()
+
+    
 
 def home(request):
     return render_to_response("home.html")
@@ -25,15 +29,29 @@ def search(request):
         return render_to_response("search2.html",c)
     else:
         return render_to_response("search.html")
+def deleteapp(request):
+    ta=Appointment.objects.get(id=request.GET["id"])
+    ta.delete()
+    u=User.objects.all()
+    for mu in u:
+        mu1=mu
+    applist=Appointment.objects.filter(stu_name=mu1.Username)
+    c = Context({"applist":applist,})
+    return render_to_response("requestm.html",c)
 
-def request_(request):    
-
-    teacherlist = Teacher.objects.all()   
-    c = Context({"teacherlist":teacherlist})
+def requestm(request):    
+    u=User.objects.all()
+    for mu in u:
+        mu1=mu
+    applist=Appointment.objects.filter(stu_name=mu1.Username)
+    c = Context({"applist":applist,})
+    return render_to_response("requestm.html",c)
+#    teacherlist = Teacher.objects.all()   
+#    c = Context({"teacherlist":teacherlist})
 ##    else:
 ##        return HttpResponse("Not right password!")
 #        #return render_to_response("request.html",c) 
-    return render_to_response("request.html",c)
+#    return render_to_response("request.html",c)
 '''
     if request and "requestdate" in request.GET:
         #print request.GET["requestdate"]
@@ -49,7 +67,58 @@ def request_(request):
         Myrequestteacher = post["requestteacher"],
           
     return render_to_response("request.html",c)
-''' 
+'''
+def addapp(request):
+
+    teacherlist = Teacher.objects.all()   
+    c = Context({"teacherlist":teacherlist})
+    u=User.objects.all()
+    for mu in u:
+        mu1=mu
+    if request.POST and "seleted_teacher" in request.POST:
+        tea=Teacher.objects.get(id=request.POST["seleted_teacher"])
+        new_appointment = Appointment( 
+        stu_name =  mu1.Username,
+        tea_name = tea.Username,
+        app_time = "",
+        flag = "no")
+        new_appointment.save()
+        return render_to_response("request2.html",c)
+#    if request.POST and "requestdate" in request.POST:
+#        applist=Appointment.objects.all()
+#        for mapp in applist:
+#            mapp1=mapp
+#        mapp1.app_time=request.POST["requestdate"]
+#        mapp1.save()
+#        return render_to_response("request.html")
+    else:
+        return render_to_response("request1.html",c)
+def apptime(request):
+    if request.POST:
+        applist=Appointment.objects.all()
+        for mapp in applist:
+            mapp1=mapp
+        mapp1.app_time=request.POST["requestdate"]
+        mapp1.save()
+        u=User.objects.all()
+        for mu in u:
+            mu1=mu
+        applist=Appointment.objects.filter(stu_name=mu1.Username)
+        c = Context({"applist":applist,})
+        return render_to_response("requestm.html",c)
+    else:
+        return render_to_response("request2.html")
+def updateapp(request):
+    tn=New.objects.get(id=request.GET["id"])
+    bc = Context({"tn":tn,})
+    if request.POST:
+        post = request.POST
+        if post["news"]:
+            
+            tn.Information= post["news"]     
+            tn.save()
+
+    return render_to_response("news-tu.html",bc) 
 def requestt(request):
     u=Usert.objects.all()
     for mu in u:
@@ -60,29 +129,67 @@ def requestt(request):
     
 def recommand(request):
     if request.GET:
-        tea=Teacher.objects.get(Research_area=request.GET["area"])
+        areal=[]
+        for ar in arealist:
+            areal.append(ar)
+        tea=Teacher.objects.filter(Research_area=areal[int(request.GET["area"])])
         c = Context({"tea":tea,})
         return render_to_response("recommand2.html",c)
     else:
-        
-        return render_to_response("recommand.html")
+        teacherlist = Teacher.objects.all()
+#        arealist = set()
+        for t in teacherlist:
+            arealist.add(t.Research_area)
+        #c = Context({"teacherlist":teacherlist})
+        c = Context({"arealist":arealist})
+        return render_to_response("recommand.html",c)
     
 def new(request):
-    teachers = Teacher.objects.all()
-
-    return render_to_response("news.html",{'teachers':teachers})
+    mynew = New.objects.all()
+    return render_to_response("news.html",{'mynew':mynew})
 
 def newt(request):
+
+    u=Usert.objects.all()
+    for mu in u:
+        mu1=mu
+
+    newslist=New.objects.filter(er=mu1.Username)      
+
+    return render_to_response("news-tm.html",{'newslist':newslist})
+    
+def addnew(request):
     if request.POST:
         post = request.POST
         u=Usert.objects.all()
         for mu in u:
             mu1=mu
-        myu = Teacher.objects.get(Username = mu1.Username)
-        myu.Information = post["news"]
-        myu.save()
-    return render_to_response("new-t.html")
 
+        new_New = New(
+        er = mu1.Username,
+        Information= post["news"]) 
+        new_New.save()        
+    return render_to_response("news-t.html")
+def updatenew(request):
+    tn=New.objects.get(id=request.GET["id"])
+    bc = Context({"tn":tn,})
+    if request.POST:
+        post = request.POST
+        if post["news"]:
+            
+            tn.Information= post["news"]     
+            tn.save()
+
+    return render_to_response("news-tu.html",bc)
+def deletenew(request):
+    tn=New.objects.get(id=request.GET["id"])
+    tn.delete()
+    u=Usert.objects.all()
+    for mu in u:
+        mu1=mu
+    newslist=New.objects.filter(er=mu1.Username)  
+    return render_to_response("news-tm.html", {'newslist':newslist})
+    
 def registert(request):
     if request.POST:
         post = request.POST

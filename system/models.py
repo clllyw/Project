@@ -8,7 +8,7 @@ class Teacher(models.Model):
     Research_area = models.CharField(max_length=100)
     Email = models.EmailField()    
     Introduction = models.CharField(max_length=3000)
-    Information = models.CharField(max_length=3000)
+    #Information = models.CharField(max_length=3000)
 class Student(models.Model):
     Username = models.CharField(max_length=30)
     Password = models.CharField(max_length=30,default=False)
@@ -16,11 +16,21 @@ class Student(models.Model):
     Institute = models.CharField(max_length=100)
     Contact_way = models.CharField(max_length=100)
     Email = models.EmailField()
-    Myrequestteacher=models.CharField(max_length=50)
-    Myrequestdate=models.CharField(max_length=50)
+    #Myrequestteacher=models.CharField(max_length=50)
+    #Myrequestdate=models.CharField(max_length=50)
 class User(models.Model):
     Username = models.CharField(max_length=30)
     Password = models.CharField(max_length=30)
 class Usert(models.Model):
     Username = models.CharField(max_length=30)
     Password = models.CharField(max_length=30)
+
+class New(models.Model):
+    er= models.CharField(max_length=30)
+    Information = models.CharField(max_length=3000)
+
+class Appointment(models.Model):
+    stu_name = models.CharField(max_length=30)
+    tea_name = models.CharField(max_length=30)
+    app_time = models.CharField(max_length=30)
+    flag = models.CharField(max_length=30)
