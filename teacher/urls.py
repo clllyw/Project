@@ -2,7 +2,7 @@ from django.conf.urls import patterns,url
 
 from django.conf import settings
 from django.conf.urls.static import static
-from system.views import home, search, requestm,addapp,apptime,deleteapp,updateapp, requestt, recommand, new, registert, login, informationt, register,home_t,information,logint,deletenew,addnew,updatenew
+from system.views import home, search, requestm,addapp,deleteapp,updateapp, requestt, recommand, new, registert, login, informationt, register,home_t,information,logint,deletenew,addnew,updatenew
 
 #from django.contrib import admin
 #admin.autodiscover()
@@ -32,7 +32,7 @@ urlpatterns = patterns('',
     url(r'^apptime/$', 'system.views.apptime'),
     url(r'^deleteapp/$', 'system.views.deleteapp'),
     url(r'^updateapp/$', 'system.views.updateapp'),
-
+    url(r'^confirm/$', 'system.views.confirm'),
     url(r'^staticfiles/(?P<path>.*)$','django.views.static.serve',{'document_root':settings.STATICFILES_DIRS, 'show_indexes': True}),
     #url(r'^admin/', include(admin.site.urls)),
 )

@@ -90,18 +90,46 @@
         <img id="u8_img" class="img " src="/static/resources/images/transparent.gif"/>
         <!-- Unnamed () -->
         <div id="u9" class="text">
-          <p><span>预约学生信息</span><span>：</span></p>
+          <p><span>未确认预约</span><span>：</span></p>
+<table border=1 align="center">
+<tr>
+	<th>预约学生</th><th>预约时间</th>
+</tr>
+{% for a in ap1 %}
+ <tr>
+<td>{{a.stu_name}}</td>
+<td>{{a.app_time}}</td>
+<form action="" method="get">
+  <td><a href="/confirm/?id={{a.id}}">确认</a></td>
+</form>
+
+ </tr>
+
+{% endfor %}
+
+</table>
+<p><span>已确认预约</span><span>：</span></p>
+<table border=1 align="center">
+<tr>
+	<th>预约学生</th><th>预约时间</th>
+</tr>
+{% for a in ap2 %}
+ <tr>
+<td>{{a.stu_name}}</td>
+<td>{{a.app_time}}</td>
+
+ </tr>
+
+{% endfor %}
+
+</table>
+
         </div>
       </div>
 
-      <!-- Unnamed (形状) -->
-      <div id="u10" class="ax_文本段落">
-        <img id="u10_img" class="img " src="/static/resources/images/transparent.gif"/>
-        <!-- Unnamed () -->
-        <div id="u11" class="text">
-          <p><span></span></p>
-        </div>
-      </div>
+
+
+
     </div>
   </body>
 </html>

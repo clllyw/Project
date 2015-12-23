@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html>
-<form method="get">
+<form method="post">
   <head>
     <title>request</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -125,7 +125,7 @@
 
       <!-- Unnamed (下拉列表框) -->
       <div id="u16" class="ax_下拉列表框">
-        <select id="u16_input" class="text_sketch">
+        <select id="u16_input" class="text_sketch" name = "seleted_teacher">
         	{% for te in teacherlist %}
             		<option value={{ forloop.counter }}>{{te.Username}}</option>
         	{% endfor %}

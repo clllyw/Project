@@ -69,62 +69,80 @@ def requestm(request):
     return render_to_response("request.html",c)
 '''
 def addapp(request):
-
+    fff = True
     teacherlist = Teacher.objects.all()   
     c = Context({"teacherlist":teacherlist})
     u=User.objects.all()
     for mu in u:
         mu1=mu
-    if request.POST and "seleted_teacher" in request.POST:
+    if "seleted_teacher" in request.POST:
         tea=Teacher.objects.get(id=request.POST["seleted_teacher"])
-        new_appointment = Appointment( 
-        stu_name =  mu1.Username,
-        tea_name = tea.Username,
-        app_time = "",
-        flag = "no")
-        new_appointment.save()
-        return render_to_response("request2.html",c)
-#    if request.POST and "requestdate" in request.POST:
-#        applist=Appointment.objects.all()
-#        for mapp in applist:
-#            mapp1=mapp
-#        mapp1.app_time=request.POST["requestdate"]
-#        mapp1.save()
-#        return render_to_response("request.html")
+        apps = Appointment.objects.filter(tea_name = tea.Username)
+        for t in apps:
+            if t.app_time == request.POST["requestdate"]:
+                fff = False
+        if fff == True:
+            new_appointment = Appointment( 
+            stu_name =  mu1.Username,
+            tea_name = tea.Username,
+            app_time = request.POST["requestdate"],
+            flag = "no")       
+            new_appointment.save()
+            u=User.objects.all()
+            for mu in u:
+                mu1=mu
+            applist=Appointment.objects.filter(stu_name=mu1.Username)
+            c = Context({"applist":applist,})
+            return render_to_response("requestm.html",c)
+        else:
+            return HttpResponse("Time interrupt!")
+    
     else:
-        return render_to_response("request1.html",c)
-def apptime(request):
-    if request.POST:
-        applist=Appointment.objects.all()
-        for mapp in applist:
-            mapp1=mapp
-        mapp1.app_time=request.POST["requestdate"]
-        mapp1.save()
-        u=User.objects.all()
-        for mu in u:
-            mu1=mu
-        applist=Appointment.objects.filter(stu_name=mu1.Username)
-        c = Context({"applist":applist,})
-        return render_to_response("requestm.html",c)
-    else:
-        return render_to_response("request2.html")
+        return render_to_response("request.html",c)
+   
+      
 def updateapp(request):
-    tn=New.objects.get(id=request.GET["id"])
-    bc = Context({"tn":tn,})
+    fff = True
+    app = Appointment.objects.get(id=request.GET["id"])
     if request.POST:
-        post = request.POST
-        if post["news"]:
-            
-            tn.Information= post["news"]     
-            tn.save()
-
-    return render_to_response("news-tu.html",bc) 
+        apps = Appointment.objects.filter(tea_name = app.tea_name)
+        for t in apps:
+            if t.app_time == request.POST["requestdate"]:
+                fff = False
+        if fff == True:
+            Appointment.objects.filter(id=request.GET["id"]).update(
+            app_time = request.POST["requestdate"])
+            u=User.objects.all()
+            for mu in u:
+                mu1=mu
+            applist=Appointment.objects.filter(stu_name=mu1.Username)
+            c = Context({"applist":applist,})
+            return render_to_response("requestm.html",c)
+        else:
+            return HttpResponse("Time interrupt!")
+    else:
+        return render_to_response("request2.html") 
 def requestt(request):
     u=Usert.objects.all()
     for mu in u:
         mu1=mu
-    stu=Student.objects.filter(Myrequestteacher=mu1.Username)
-    c = Context({"stu":stu,})
+    ap=Appointment.objects.filter(tea_name=mu1.Username)
+    ap1=ap.filter(flag="no")
+    ap2=ap.filter(flag="yes")
+    c = Context({"ap":ap,"ap1":ap1,"ap2":ap2})
+    return render_to_response("request-t.html",c) 
+
+def confirm(request):
+    a=Appointment.objects.get(id=request.GET["id"])
+    a.flag="yes"
+    a.save()
+    u=Usert.objects.all()
+    for mu in u:
+        mu1=mu
+    ap=Appointment.objects.filter(tea_name=mu1.Username)
+    ap1=ap.filter(flag="no")
+    ap2=ap.filter(flag="yes")
+    c = Context({"ap":ap,"ap1":ap1,"ap2":ap2})
     return render_to_response("request-t.html",c) 
     
 def recommand(request):
